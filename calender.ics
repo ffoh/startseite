@@ -7,7 +7,7 @@ PRODID:https://ostholstein.freifunk.net/
 METHOD:PUBLISH
 {% for termin in site.data.termine %}
 BEGIN:VEVENT
-UID:{{termin | date: %s }}@ostholstein.freifunk.net
+UID:{{termin | date: "%s" }}@ostholstein.freifunk.net
 ORGANIZER;CN="Freifunk Ostholstein":MAILTO:talk@ostholstein.freifunk.net
 LOCATION:{{ termin.location }}
 GEO:{{ termin.geolocation | default: '53.992459, 10.814298' }}
