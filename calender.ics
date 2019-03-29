@@ -11,12 +11,11 @@ UID:{{termin | date: "%s" }}@ostholstein.freifunk.net
 ORGANIZER;CN="Freifunk Ostholstein":MAILTO:talk@ostholstein.freifunk.net
 LOCATION:{{ termin.location }}
 GEO:{{ termin.geolocation | default: '53.992459, 10.814298' }}
-SUMMARY: {{ termin.summary | default: "Wir Treffen uns zum regelmäßigen Austausch" }}
+SUMMARY: {{ termin.summary | default: "Freifunk Ostholstein Treffen" }}
 DESCRIPTION:{{ termin.summary | default: "Wir Treffen uns zum regelmäßigen Austausch" }}
 CLASS:PUBLIC
-DTSTART:{{ termin.datum | date: "%Y%m%dT%H%M00Z" }}
+DTSTART:{{ termin.datum | date: "%Y%m%dT%H%M00" }}
 DTEND:{{ termin.datum | date:'%s' | plus:10800 | date: "%Y%m%dT%H%M00Z" }}
-DTSTAMP:{{ "now" | date: "%Y%m%dT%H%M00Z" }}
-END:VEVENT
-{% endfor %}
+DTSTAMP:{{ "now" | date: "%Y%m%dT%H%M00" }}
+END:VEVENT{% endfor %}
 END:VCALENDAR
