@@ -38,6 +38,8 @@ GROUPS = {
   "AVM" => {
     models: [
       "FRITZ-BOX-4020",
+      "FRITZ-WLAN-REPEATER-300E",
+      "FRITZ-WLAN-REPEATER-450E",
     ],
     extract_rev: lambda { |model, suffix| nil },
   },
@@ -141,6 +143,7 @@ GROUPS = {
       "WNDR4300",
       "WNDRMAC",
       "WNR2200", # nur sysupgrade
+      "R6120",
     ],
     extract_rev: lambda { |model, suffix| /^(.*?)(?:-sysupgrade)?\.[^.]+$/.match(suffix)[1].sub(/^$/, 'v1') },
   },
@@ -176,7 +179,7 @@ GROUPS = {
   "TP-Link" => {
     models: [
       "ARCHER-C25",
-      "ARCHER-C5",
+      "ARCHER-C50",
       "ARCHER-C58",
       "ARCHER-C59",
       "ARCHER-C60",
@@ -220,9 +223,12 @@ GROUPS = {
       "TL-WR841N/ND",
       "TL-WR842N/ND",
       "TL-WR843N/ND",
+      "TL-WR902AC",
       "TL-WR940N",
       "TL-WR940N/ND",
       "TL-WR941N/ND",
+      "RE355",
+      "RE450",
     ],
     extract_rev: lambda { |model, suffix| rev = /^(?:-(?!sysupgrade)(.+?))?(?:-sysupgrade)?\.bin$/.match(suffix)[1] },
   },
@@ -329,6 +335,7 @@ GROUPS = {
   },
     "Zyxel" => {
     models: [
+      "nbg6616",
       "nbg6716",
     ],
     extract_rev: lambda { |model, suffix| nil },
@@ -462,11 +469,26 @@ module Jekyll
           suffix = href[basename.length..-1]
           info = firmwares[basename]
 
-          hwrev = info[:extract_rev].call info[:model], suffix
+          if info == nil then
+            puts "No info for "+href
+          else
+            if info[:extract_rev] == nil then
+              puts "No info extracv_ref for "+href+" basenamed "+basename
+              puts "Info has keyz: "
+              info.keys.each do |key|
+                puts "   #{key}"
+              end
+            elsif info[:model] == nil or info[:model]==[] then
+              puts "No info model for "+href+" basenamed "+basename
+            else
+              puts "Model:"+info[:model]
+              hwrev = info[:extract_rev].call info[:model], suffix
 
-          fw = info[:revisions][hwrev]
-          fw.sysupgrade = FIRMWARE_BASE + "sysupgrade/" + href
-          info[:revisions][hwrev] = fw
+              fw = info[:revisions][hwrev]
+              fw.sysupgrade = FIRMWARE_BASE + "sysupgrade/" + href
+              info[:revisions][hwrev] = fw
+            end
+          end
         end
       end
 
