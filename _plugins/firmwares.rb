@@ -147,6 +147,21 @@ GROUPS = {
     ],
     extract_rev: lambda { |model, suffix| /^(.*?)(?:-sysupgrade)?\.[^.]+$/.match(suffix)[1].sub(/^$/, 'v1') },
   },
+  "nexx" => {
+    models:[
+      "wt3020-8m",
+      "wt3020ad",
+      "wt3020f",
+      "wt3020h",
+    ],
+    extract_rev: lambda { |model, suffix| nil },
+   },
+  "ocedo" => {
+    models: [
+      "koala",
+    ],
+    extract_rev: lambda { |model, suffix| nil },
+   },
   "Onion" => {
     models: [
       "Omega",
@@ -180,6 +195,7 @@ GROUPS = {
     models: [
       "ARCHER-C25",
       "ARCHER-C50",
+      "ARCHER-C5",
       "ARCHER-C58",
       "ARCHER-C59",
       "ARCHER-C60",
@@ -333,7 +349,14 @@ GROUPS = {
     ],
     extract_rev: lambda { |model, suffix| nil },
   },
-    "Zyxel" => {
+  "zbt" => {
+    models: [
+      "wg3526-16m",
+      "wg3526-32m",
+    ],
+    extract_rev: lambda { |model, suffix| nil },
+  },
+  "Zyxel" => {
     models: [
       "nbg6616",
       "nbg6716",
