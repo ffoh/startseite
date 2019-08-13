@@ -18,11 +18,22 @@ layout: base
 
     <h4>Häufigste Modelle</h4>
       <ul>
+<<<<<<< HEAD
         <li><a href="/firmware.html#TP-Link_TL-WR1043N">TL-WR1043N v5</a></li>
         <li><a href="/firmware.html#Ubiquiti_UniFi AC Pro">Ubiquiti UniFi AP AC Pro</a></li>
 	<li><a href="/firmware.html#Ubnt_erx">Ubiquiti Edge Router X</a></li>
+=======
+        <li><a href="/firmware.html#TP-Link_TL-WR841N/ND">TL-WR841N/ND</a> (Nicht mehr empfohlen!)</li>
+        <li><a href="/firmware.html#TP-Link_TL-WR842N/ND">TL-WR842N/ND</a></li>
+        <li><a href="/firmware.html#TP-Link_TL-WR1043N/ND">TL-WR1043N/ND v2 bis v5</a> (<b>Empfohlen!</b></li>
+        <li><a href="/firmware.html#AVM_FRITZ-BOX-4020">FRITZ!BOX 4020</a></li>
+        <li><a href="/firmware.html#TP-Link_CPE210">CPE210</a> (Richfunk)</li>
+        <li><a href="/firmware.html#TP-Link_ARCHER-C7">TL-Archer C7</a> (2.4 und 5 GHz)</li>
+        <li><a href="/firmware.html#Ubiquiti_UniFi%20AC%20Lite">Ubiquiti UniFi AC Lite</a> (2.4 und 5 GHz)</li>      
+        <li><a href="/firmware.html#Ubiquiti_UniFi AC Mesh">Ubiquiti UniFi AC Mesh</a> (2.4 und 5 GHz, Richtfunk)</li>      
+>>>>>>> origin/master
       </ul>
-  
+    
     <p>Hier findest du eine Liste unterstützter Router-Modelle und ihre entsprechenden Firmware Images.</p>
     <p><b>Achtung!</b> Beim Umstieg von einer anderen Firmware aus einer anderen Community unbedingt den Haken "Einstellungen behalten"
     ausschalten, also alle Einstellungen vergessen! Die Nord Firmware kann die Einstellungen nicht korrekt übernehmen.</p>
@@ -54,7 +65,7 @@ layout: base
           <td>
             <a name="{{ groups[0] }}_{{ model[0] }}"></a>
             <strong>{{ model[0] }}</strong>
-            <br><a class="infolink" href="https://wiki.openwrt.org/toh/{{ groups[0] | slugify: 'pretty' }}/{{ model[0] | slugify: 'pretty' }}" target="_blank" title="OpenWrt Wiki">&rarr; info</a>
+            <br><a class="infolink" href="https://openwrt.org/start?do=search&q={{ groups[0] | slugify: 'pretty' }}/{{ model[0] | slugify: 'pretty' | replace: '/','-' | replace: 'N-ND','ND'  | replace: 'n-nd','nd' }}" target="_blank" title="OpenWrt Wiki">&rarr; info</a>
           </td>
           <td>
             {% for fw in model[1] %}
@@ -62,7 +73,7 @@ layout: base
             {% if fw[0] %}
             <strong>{{ fw[0] }}:</strong>
             {% endif %}
-            <a href="{{ fw[1].factory }}">factory</a>
+            <a href="{{ fw[1].factory }}">Firmware</a>
             {% endif %}
             <br/>
             {% endfor %}
@@ -73,7 +84,7 @@ layout: base
             {% if fw[0] %}
             <strong>{{ fw[0] }}:</strong>
             {% endif %}
-            <a href="{{ fw[1].sysupgrade }}">sysupgrade</a>
+            <a href="{{ fw[1].sysupgrade }}">Upgrade{% if fw[1].factory %}{% else %}=Firmware{% endif %}</a>
             {% endif %}
             <br/>
             {% endfor %}
@@ -101,6 +112,14 @@ layout: base
     <p>Sämtliche Firmware-Dateien findest du unter <a href="{{ site.firmware.base }}">{{ site.firmware.base }}</a>.</p>
     <p>Firmware-Mirror: <a href="{{ site.firmware_mirror }}">{{ site.firmware_mirror }}</a>.</p>
     <p>Das Gluon-Site-Repository befindet sich unter <a href="{{ site.firmware.gluon_site }}">{{ site.firmware.gluon_site }}</a>.</p>
+  </div>
+  <div class="four columns panel">
+    <h5>Firmware Erstellung<a name="erstellung" href="#erstellung">&nbsp;&nbsp;&nbsp;&nbsp;</a></h5>
+    <p>
+    	Beim Bauen der Firmware werden die Commit-Ids des gluon Repositories und des Site-Konfigurations-Repositories in der Firmware verankert.
+    	Diese Ids kann man in der Startseite der Erweiterten Einstellungen im Config Mode ersehen. Die Git Id ist genau der Commit auf dem die Firmware gebaut wurde.
+    	Falls dort ein Plus (+) am Ende erscheint ist dies der "Dirty"-Flag. Die Id wurde erzeugt mit <pre>git describe --always --dirty=+</pre>
+    </p>
   </div>
   <div class="four columns panel">
     <h5>Nutzungsbedingungen</h5>

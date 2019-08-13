@@ -1,5 +1,5 @@
-Startseite der Community Ostholstein
-====================================
+Startseite der Community Freifunk Ostholstein
+=============================================
 
 Webseite: http://ostholstein.freifunk.net
 
@@ -10,18 +10,16 @@ Um die Hauptseiten zu bearbeiten, clone dises Repository und installiere ein paa
 Dependencies
 ------------
 
-* ruby
+* ruby2.0
+* bundler
 
-### Gems
+Install
+-------
 
-* nokogiri
-* jekyll
-* json
-
-On Ubuntu/Debian:
-
-    sudo apt-get install ruby-nokogiri
-    sudo gem install json jekyll
+    git clone <repo-url> startseite
+    cd startseite/
+    gem install bundler
+    bundle install
 
 Customization
 -------------
@@ -50,9 +48,14 @@ under `/path/to/www` will be built from the templates provided by
 
 	jekyll build
 
-so it is stored in the folder `_site` inside this repository. If
-something analogous to `rm -r /path/to/www; mv _site /path/to/www` is not
-possible, you may decided for something like
+On Ubuntu you might need to ensure the right environment with
+
+        bundle exec jekyll build
+
+The generated static pages will be stored in the subfolder `_site/`, that you
+should move somewhere outside of this repository. If something analogous to
+`rm -r /path/to/www; mv _site /path/to/www` is not possible, you may decided for
+something like
 
 	(cd _site && tar cf - .)|(cd /path/to/www && sudo tar xf -)
 

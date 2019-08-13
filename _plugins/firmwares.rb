@@ -1,5 +1,8 @@
 #!/usr/bin/ruby
 
+# error handling for "undefined method `[]' for nil:NilClass (NoMethodError)" with
+# jekyll build --trace
+
 require 'net/http'
 require 'uri'
 require 'nokogiri'
@@ -22,6 +25,11 @@ FIRMWARE_BASE = 'http://ostholstein.freifunk.net/firmware/experimental/'
 FIRMWARE_PREFIX = 'gluon-' + COMMUNITY_TLD
 FIRMWARE_REGEX = Regexp.new('^' + FIRMWARE_PREFIX + '-' + FIRMWARE_VERSION + '-')
 
+# {} ist ein hash
+# [] ist ein array
+# foo: weist den key :foo im hash zu
+# "foo" => ist äquivalent mit foo: aber kann auch sonderzeichen enthalten (das ganze aber erst in zukunft, ab ruby 2.3)
+# lambda ist eine spezielle anonyme funktion
 GROUPS = {
   "8Devices" => {
     models: [
@@ -54,11 +62,12 @@ GROUPS = {
       "Network-AP121U",
       "Network-Hornet-UB"
     ],
+    #FIXME: alfa-networks to alfa in OpenWRT Wiki info links and Router node pictures
     extract_rev: lambda { |model, suffix| nil },
   },
   "Allnet" => {
     models: [
-      "ALL0315N"
+      "ALL0315N",
     ],
     extract_rev: lambda { |model, suffix| nil },
   },
@@ -88,10 +97,16 @@ GROUPS = {
     ],
     extract_rev: lambda { |model, suffix| /^-(((rev-|)|b).+?)(?:-sysupgrade)?\.bin$/.match(suffix)[1] },
   },
-  "GL-iNet" => {
+  "GL" => {
     models: [
-      "6408A",
-      "6416A",
+      "AR150",
+      "AR300M",
+      "AR750",
+      "MT300A",
+      "MT300N",
+      "MT750",
+      "iNet-6408A",
+      "iNet-6416A",
     ],
     extract_rev: lambda { |model, suffix| /^-(.+?)(?:-sysupgrade)?\.bin$/.match(suffix)[1] },
   },
@@ -105,6 +120,23 @@ GROUPS = {
       "MT750",
     ],
     extract_rev: lambda { |model, suffix| /^-(.+?)(?:-sysupgrade)?\.bin$/.match(suffix)[1] },
+  "La-Fonera" => {
+    models: [
+      "2.0n",
+    ],
+    extract_rev: lambda { |model, suffix| nil },
+  },
+  "Fonera20n" => {
+    models: [
+      "",
+    ],
+    extract_rev: lambda { |model, suffix| nil },
+  },
+  "Lamobo" => {
+    models: [
+      "r1",
+    ],
+    extract_rev: lambda { |model, suffix| nil },
   },
   "Lemaker" => {
     models: [
@@ -200,6 +232,7 @@ GROUPS = {
       "ARCHER-C59",
       "ARCHER-C60",
       "ARCHER-C7",
+      "ARCHER-C5",
       "CPE210",
       "CPE220",
       "CPE510",
@@ -255,6 +288,14 @@ GROUPS = {
     ],
     extract_rev: lambda { |model, suffix| nil },
   },
+  "Ubnt" => {
+    models: [
+      "erx",
+      "erx-sfp",
+    ],
+    extract_rev: lambda { |model, suffix| nil },
+  },
+
   "Ubiquiti" => {
     models: [
       "Airgateway",
@@ -301,16 +342,13 @@ GROUPS = {
         nil
       end
     },
-#    transform_label: lambda { |model|
-      #if model == 'Bullet M' then
-      #  'Bullet M, Loco M'
-      #els
-#     if model == 'UniFi' then
-#        'UniFi AP (LR)'
-#      else
-#        model
-#      end
-#    }
+    # transform_label: lambda { |model|
+    #   if model == 'UniFi' then
+    #     'UniFi AP (LR)'
+    #   else
+    #     model
+    #   end
+    # },
   },
   "VoCore" => {
     models: [
@@ -318,10 +356,10 @@ GROUPS = {
     ],
     extract_rev: lambda { |model, suffix| nil },
   },
-  "wd-my-net" => {
+  "WD" => {
     models: [
-      "N600",
-      "N750",
+      "My-Net-N600",
+      "My-Net-N750",
     ],
     extract_rev: lambda { |model, suffix| nil },
   },
@@ -329,6 +367,7 @@ GROUPS = {
     models: [
       "64",
       "Generic",
+      "Geode",
       "KVM",
       "VirtualBox",
       "VMware",
@@ -359,6 +398,28 @@ GROUPS = {
   "Zyxel" => {
     models: [
       "nbg6616",
+      "nbg6716",
+    ],
+    extract_rev: lambda { |model, suffix| nil },
+  },
+  "x86-64" => {
+    models: [
+      "Generic",
+      "KVM",
+      "VirtualBox",
+      "VMware",
+    ],
+    extract_rev: lambda { |model, suffix| nil },
+  },
+  "Zbt" => {
+    models: [
+      "wg3526-16m",
+      "wg3526-32m",
+    ],
+    extract_rev: lambda { |model, suffix| nil },
+  },
+  "Zyxel" => {
+    models: [
       "nbg6716",
     ],
     extract_rev: lambda { |model, suffix| nil },
@@ -422,11 +483,12 @@ module Jekyll
       end
 
       def prefix_of(sub, str)
-        str[0, sub.length].eql? sub
+        str[0, sub.length].eql? sub and str[sub.length, 1].eql? '-'
       end
 
       def find_prefix(name)
-        puts "Checking prefix for "+name
+        #for debugging
+        #puts "Checking prefix for "+name
         @prefixes.each do |prefix|
           return prefix if prefix_of(prefix, name)
         end
@@ -459,16 +521,21 @@ module Jekyll
         end
       }]
 
-      @prefixes = firmwares.keys.sort_by { |p| p.length }.reverse
+      # sort_by erwartet einen block in dem auf jedes Element eine funktion angewendet wird: .length  
+      #@prefixes = firmwares.keys.sort_by { |p| p.length }.reverse
+      @prefixes = firmwares.keys.sort_by(&:length).reverse
 
       factory = get_files(FIRMWARE_BASE + "factory/")
       sysupgrade = get_files(FIRMWARE_BASE + "sysupgrade/")
 
       @prefixes.each do |prefix|
-         puts "Prefixes: " + prefix
+        # for debugging:
+        #puts "Prefixes: " + prefix
       end
 
       factory.each do |href|
+      	# for debugging:
+      	#puts "search " + href
         basename = find_prefix href
         if basename.nil? then
           puts "error in "+href
@@ -487,7 +554,7 @@ module Jekyll
       sysupgrade.each do |href|
         basename = find_prefix href
         if basename.nil? then
-          puts "error in "+href
+          puts "cannot assosiate sysupgrade "+href
         else
           suffix = href[basename.length..-1]
           info = firmwares[basename]
