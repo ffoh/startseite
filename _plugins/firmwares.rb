@@ -120,6 +120,7 @@ GROUPS = {
       "MT750",
     ],
     extract_rev: lambda { |model, suffix| /^-(.+?)(?:-sysupgrade)?\.bin$/.match(suffix)[1] },
+  },
   "La-Fonera" => {
     models: [
       "2.0n",
