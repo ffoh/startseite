@@ -8,7 +8,7 @@ community:
 
   # Custom URLs
   url_wiki:  "http://luebeck.freifunk.net/wiki/Ostholstein"
-  url_webchat: "https://riot.eclabs.de/#/room/#ffoh:matrix.eclabs.de"
+  #url_webchat: "https://riot.eclabs.de/#/room/#ffoh:matrix.eclabs.de"
   url_geomap: "https://coco.ffoh.de/meshviewer/"
   url_graph: "https://coco.ffoh.de/meshviewer/"
   url_nodelist: "/map2/nodes.list"

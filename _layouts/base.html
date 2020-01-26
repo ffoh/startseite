@@ -48,7 +48,9 @@
         <li><a href="/firmware.html">Firmware</a></li>
         <li><a href="/treffen.html">Treffen</a></li>
         <li><a href="{{ site.community.url_wiki }}">Wiki</a></li>
+        {% if site.community contains 'url_webchat' %}
         <li><a href="{{ site.community.url_webchat }}" target="_blank">Webchat</a></li>
+        {% endif %}
         <li><a href="https://coco.ffoh.de/meshviewer" target="_blank">Knotenkarte</a></li>
       </ul>
     </div>
@@ -71,7 +73,6 @@
             {% for sip in site.community.sip %}
             {{ sip }}{% if forloop.rindex > 2 %}, {% else %}{%if forloop.rindex == 2%} oder {% endif %}{% endif %}{% endfor %} <br/>
           {% endif %}
-          <strong>IRC:</strong> {{ site.community.irc }} im <a href="http://hackint.org">hackint</a> | <a href="{{ site.community.url_webchat }}">Live Webchat</a><br/>
           {% if site.community contains 'twitter' %}
           <strong>Twitter:</strong> <a href="https://twitter.com/{{ site.community.twitter }}">@{{ site.community.twitter }}</a><br/>
           {% endif %}
